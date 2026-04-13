@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Энциклопедия Сада НАО "ЗКАТУ им. Жангир хана"</title>
+    <style>
+        :root {
+            --primary: #0a3d62; /* Глубокий темно-синий */
+            --primary-light: #60a3bc; /* Светло-голубой для акцентов */
+            --bg: #eaf4f4; /* Очень светло-голубой фон всей страницы */
+            --card-bg: white;
+            --text: #222;
+            --header-text: #fff;
+            --accent: #fbc531; /* Золотой акцент для подзаголовков */
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 20px;
+        }
+        header {
+            position: relative;
+            text-align: center;
+            padding: 70px 20px;
+            background: var(--primary);
+            color: var(--header-text);
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 2.5em;
+        }
+
+        header p {
+            margin: 15px 0 0;
+            opacity: 0.9;
+            color: var(--accent);
+            font-weight: bold;
+        }
+        .logo-link {
+            position: absolute;
+            top: 20px;
+            right: 25px;
+            cursor: pointer;
+            z-index: 100;
+        }
+
+        .logo-img {
+            height: 70px;
+            width: auto;
+            border-radius: 5px;
+            transition: transform 0.2s;
+            border: 2px solid white;
+        }
+
+        .logo-img:hover {
+            transform: scale(1.08);
+        }
+        .lang-switcher {
+            position: absolute;
+            top: 25px;
+            left: 25px;
+            display: flex;
+            background: rgba(255,255,255,0.15);
+            border-radius: 50px;
+            padding: 6px;
+            backdrop-filter: blur(12px);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.25);
+            border: 1px solid rgba(255,255,255,0.3);
+            z-index: 110;
+        }
+
+        .lang-btn {
+            padding: 10px 22px;
+            margin: 0 4px;
+            border: none;
+            background: transparent;
+            color: var(--header-text);
+            font-weight: 600;
+            font-size: 1.05em;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            white-space: nowrap;
+        }
+
+        .lang-btn:hover {
+            background: rgba(255,255,255,0.25);
+        }
+
+        .lang-btn.active {
+            background: #fff;
+            color: var(--primary);
+            box-shadow: 0 3px 12px rgba(0,0,0,0.15);
+            transform: scale(1.05);
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+
+        .card-img {
+            width: 100%;
+            height: 220px; /* Высота фото */
+            object-fit: cover;
+            border-bottom: 3px solid var(--primary-light);
+        }
+
+        .card-content {
+            padding: 20px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card h3 {
+            color: var(--primary);
+            margin-top: 0;
+            margin-bottom: 5px;
+            font-size: 1.4em;
+        }
+
+        .card .type {
+            font-size: 0.9em;
+            color: var(--primary-light);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+
+        .card p {
+            font-size: 0.95em;
+            line-height: 1.6;
+            margin-top: 0;
+            flex-grow: 1;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;  
+            overflow: hidden;
+        }
+        .details-view {
+            display: none;
+            max-width: 900px;
+            margin: 0 auto;
+            background: var(--card-bg);
+            border-radius: 15px;
+            box-shadow: 0 5px 25px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+
+        .details-content {
+            padding: 40px;
+        }
+
+        .details-view img.main-img {
+            width: 100%;
+            height: 500px;
+            object-fit: cover;
+            border-bottom: 4px solid var(--primary);
+        }
+
+        .details-view h2 {
+            color: var(--primary);
+            font-size: 2.2em;
+            margin-top: 0;
+            margin-bottom: 5px;
+        }
+
+        .details-view .type {
+            font-size: 1.1em;
+            color: var(--primary-light);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 30px;
+            font-weight: bold;
+        }
+
+        .details-view .detailed-text {
+            line-height: 1.9;
+            font-size: 1.15em;
+            color: #333;
+            text-align: justify;
+        }
+
+        .details-view .detailed-text h4 {
+            color: var(--primary);
+            margin-top: 25px;
+            margin-bottom: 10px;
+        }
+        .back-btn {
+            display: inline-block;
+            margin-top: 40px;
+            padding: 12px 25px;
+            background: var(--primary);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: background 0.2s;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .back-btn:hover {
+            background: var(--primary-light);
+        }
+        footer {
+            text-align: center;
+            margin-top: 70px;
+            padding: 25px;
+            opacity: 0.8;
+            font-size: 1em;
+            border-top: 1px solid rgba(0,0,0,0.1);
+        }
+        .fade-in {
+            animation: fadeIn 0.6s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <!-- Красивый переключатель языков (слева сверху) -->
+    <div class="lang-switcher">
+        <button onclick="switchLang('ru')" id="lang-ru" class="lang-btn active">Русский</button>
+        <button onclick="switchLang('kk')" id="lang-kk" class="lang-btn">Қазақша</button>
+        <button onclick="switchLang('en')" id="lang-en" class="lang-btn">English</button>
+    </div>
+
+    <a onclick="showGrid()" class="logo-link">
+        <img src="лого.jpg" alt="Логотип ЗКАТУ" class="logo-img">
+    </a>
+    <h1 id="header-title">Энциклопедия Сортов Плодового Сада</h1>
+    <p id="header-subtitle">НАО "ЗКАТУ им. Жангир хана"</p>
+</header>
+
+<div class="grid fade-in" id="tree-grid"></div>
+
+<div class="details-view fade-in" id="details-view">
+    <img id="details-img" class="main-img" src="" alt="Сорт">
+    <div class="details-content">
+        <h2 id="details-name"></h2>
+        <div class="type" id="details-type"></div>
+        <div class="detailed-text" id="details-desc"></div>
+        <div onclick="showGrid()" id="back-btn" class="back-btn">← Вернуться к списку</div>
+    </div>
+</div>
+
+<footer>
+    <p id="footer-text">&copy; 2026 ЗКАТУ им. Жангир хана. Научно-образовательный комплекс.</p>
+    <p>Создатели сайта</p>
+    <p>Манкеев Ж.К</p>
+    <p>Мусина.М.К</p>
+    <p>Aбуова Ж.М</p>
+</footer>
+
+<script>
+    const trees = [
+        { 
+            id: 1, 
+            name: { ru: "Скрыжапель", kk: "Скрыжапель", en: "Skryzhapel" },
+            type: { ru: "Яблоня зимняя", kk: "Қысқы алма", en: "Winter apple" },
+            cardDesc: { 
+                ru: "Один из старейших русских сортов. Плоды крупные, округло-конические. Мякоть сочная, кисло-сладкая.",
+                kk: "Ең көне орыс сорттарының бірі. Жемістер ірі, дөңгелек-конусты. Еті шырынды, қышқыл-тәтті.",
+                en: "One of the oldest Russian varieties. Large, round-conical fruits. Juicy, sweet-sour pulp."
+            },
+            img: "https://rastisad.ru/sites/default/files/styles/max_650x650/public/2023-02/%D0%A1%D0%BA%D1%80%D1%8B%D0%B6%D0%B0%D0%BF%D0%B5%D0%BB%D1%8C%20%D0%BA%D1%80%D1%83%D0%BF%D0%BD%D0%BE%D0%BF%D0%BB%D0%BE%D0%B4%D0%BD%D1%8B%D0%B9-.JPG?itok=pjsMlfs3", 
+            longDesc: {
+                ru: `<h4>История сорта</h4><p>Скрыжапель (или Скрыжапель Курский) — это старинный, традиционный сорт яблони народной селекции...</p><h4>Морфологическое описание</h4><p>Деревья сорта Скрыжапель отличаются мощным ростом...</p><h4>Характеристика плодов</h4><p>Плоды крупные, массой 150–200 граммов...</p><h4>Урожайность и хранение</h4><p>Это зимний сорт...</p><h4>Устойчивость к болезням</h4><p>Деревья обладают высокой зимостойкостью...</p>`,
+                kk: `<h4>Сорт тарихы</h4><p>Скрыжапель — XIX ғасырдағы халықтық селекцияның ескі сорты...</p><h4>Морфологиялық сипаттама</h4><p>Ағаштары қуатты өседі...</p><h4>Жемістердің сипаттамасы</h4><p>Жемістер ірі (150–200 г)...</p><h4>Өнімділік және сақтау</h4><p>Қысқы сорт...</p><h4>Ауруларға төзімділік</h4><p>Қыста төзімділігі жоғары...</p>`,
+                en: `<h4>History of the variety</h4><p>Skryzhapel is an ancient traditional folk-selection apple variety...</p><h4>Morphological description</h4><p>Trees are vigorous...</p><h4>Fruit characteristics</h4><p>Fruits are large (150–200 g)...</p><h4>Yield and storage</h4><p>Winter variety...</p><h4>Disease resistance</h4><p>High winter hardiness...</p>`
+            }
+        },
+        { 
+            id: 2, 
+            name: { ru: "Бельфлер башкирский", kk: "Башқұрт Бельфлері", en: "Bashkir Belfler" },
+            type: { ru: "Яблоня зимняя", kk: "Қысқы алма", en: "Winter apple" },
+            cardDesc: { 
+                ru: "Зимний сорт башкирской селекции. Плоды средней величины, с темно-красным румянцем.",
+                kk: "Башқұрт селекциясының қысқы сорты. Орташа мөлшердегі жемістер, қою-қызыл қызаруы бар.",
+                en: "Winter variety of Bashkir selection. Medium-sized fruits with dark red blush."
+            },
+            img: "https://rastisad.ru/sites/default/files/styles/max_325x325/public/2021-02/%D0%91%D0%B5%D0%BB%D1%8C%D1%84%D0%BB%D0%B5%D1%80%20%D0%B1%D0%B0%D1%88%D0%BA%D0%B8%D1%80%D1%81%D0%BA%D0%B8%D0%B9..jpg?itok=IB1_i46K", 
+            longDesc: {
+                ru: `<h4>История сорта</h4><p>Бельфлер башкирский выведен в Башкирском НИИ...</p><h4>Морфологическое описание</h4><p>Дерево средней силы роста...</p><h4>Характеристика плодов</h4><p>Плоды средней величины (120–160 г)...</p><h4>Урожайность и хранение</h4><p>Сорт зимний...</p><h4>Устойчивость к болезням</h4><p>Зимостойкость выше средней...</p>`,
+                kk: `<h4>Сорт тарихы</h4><p>Башқұрт Бельфлері Башқұрт НИИ-де өсірілген...</p><h4>Морфологиялық сипаттама</h4><p>Ағашы орташа күшті...</p><h4>Жемістердің сипаттамасы</h4><p>Жемістер орташа (120–160 г)...</p><h4>Өнімділік және сақтау</h4><p>Қысқы сорт...</p><h4>Ауруларға төзімділік</h4><p>Қыста төзімділігі жоғары...</p>`,
+                en: `<h4>History</h4><p>Bashkir Belfler was bred in Bashkir Research Institute...</p><h4>Morphological description</h4><p>Medium vigor tree...</p><h4>Fruit characteristics</h4><p>Fruits medium (120–160 g)...</p><h4>Yield and storage</h4><p>Winter variety...</p><h4>Disease resistance</h4><p>Above average winter hardiness...</p>`
+            }
+        },
+        { 
+            id: 3, 
+            name: { ru: "Подарок Графского", kk: "Графскийдің сыйы", en: "Gift to Grafsky" },
+            type: { ru: "Яблоня зимняя", kk: "Қысқы алма", en: "Winter apple" },
+            cardDesc: { 
+                ru: "Зимный сорт с крупными, привлекательными плодами. Мякоть кремовая, сочная.",
+                kk: "Ірі, тартымды жемістері бар қысқы сорт. Еті кремді, шырынды.",
+                en: "Winter variety with large, attractive fruits. Creamy, juicy pulp."
+            },
+            img: "https://rastisad.ru/sites/default/files/styles/max_325x325/public/2023-04/%D0%9F%D0%BE%D0%B4%D0%B0%D1%80%D0%BE%D0%BA%20%D0%93%D1%80%D0%B0%D1%84%D1%81%D0%BA%D0%BE%D0%BC%D1%83.jpg?itok=KXUnfMu2", 
+            longDesc: {
+                ru: `<h4>История сорта</h4><p>Сорт выведен в ВНИИСПК (Орёл) от скрещивания Бельфлер жёлтый × Пепин шафранный. Районирован в Центрально-Чернозёмном и Поволжском регионах.</p><h4>Морфологическое описание</h4><p>Дерево средней силы роста с округло-овальной кроной. Побеги толстые, коленчатые. Листья крупные, тёмно-зелёные, блестящие. Цветки крупные, розовато-белые.</p><h4>Характеристика плодов</h4><p>Плоды крупные (180–250 г), округло-конические. Кожица жёлтая с ярко-красным полосато-пятнистым румянцем. Мякоть кремовая, очень сочная, мелкозернистая, гармоничного кисло-сладкого вкуса с ароматом.</p><h4>Урожайность и хранение</h4><p>Зимний сорт. Съём в конце сентября — начале октября. Хранится до мая. Урожайность высокая и регулярная.</p><h4>Устойчивость к болезням</h4><p>Зимостойкость высокая. Устойчивость к парше выше средней. Требует минимальной химической защиты.</p>`,
+                kk: `<h4>Сорт тарихы</h4><p>Сорт ВНИИСПК-де (Орёл) Бельфлер жёлтый × Пепин шафранный будандастыруынан өсірілген.</p><h4>Морфологиялық сипаттама</h4><p>Ағашы орташа күшті, дөңгелек-овал тәжді. Побегтері қалың. Жапырақтары үлкен, қара-жасыл.</p><h4>Жемістердің сипаттамасы</h4><p>Жемістер ірі (180–250 г), дөңгелек-конусты. Қабығы сары, қызыл жолақты румянцы бар. Еті кремді, өте шырынды, қышқыл-тәтті.</p><h4>Өнімділік және сақтау</h4><p>Қысқы сорт. Қыркүйек соңы — қазан басында жиналады. Мамырға дейін сақталады.</p><h4>Ауруларға төзімділік</h4><p>Қыста төзімділігі жоғары. Паршаға орташадан жоғары төзімді.</p>`,
+                en: `<h4>History of the variety</h4><p>Bred in VNIISPK (Orel) from crossing Belfler Yellow × Pepin Shafranny.</p><h4>Morphological description</h4><p>Medium vigor tree with rounded-oval crown. Leaves large, dark green, glossy.</p><h4>Fruit characteristics</h4><p>Fruits large (180–250 g), round-conical. Skin yellow with bright red striped blush. Pulp creamy, very juicy, harmonious sweet-sour.</p><h4>Yield and storage</h4><p>Winter variety. Harvest late September – early October. Stores until May.</p><h4>Disease resistance</h4><p>High winter hardiness. Above average resistance to scab.</p>`
+            }
+        },
+        { 
+            id: 4, 
+            name: { ru: "Память Воина", kk: "Жауынгердің есімі", en: "Memory of the Warrior" },
+            type: { ru: "Яблоня зимняя", kk: "Қысқы алма", en: "Winter apple" },
+            cardDesc: { 
+                ru: "Сорт отличается высокой зимостойкостью. Плоды средней величины, темно-красные.",
+                kk: "Сорт жоғары қысқа төзімділікпен ерекшеленеді. Орташа мөлшердегі қою-қызыл жемістер.",
+                en: "The variety is distinguished by high winter hardiness. Medium-sized, dark red fruits."
+            },
+            img: "https://dachadacha.com/images/15-08-2019/2.jpg", 
+            longDesc: {
+                ru: `<h4>История сорта</h4><p>Сорт выведен в ВНИИСПК от скрещивания Антоновка обыкновенная × Бабушкино. Посвящён памяти воинов Великой Отечественной войны.</p><h4>Морфологическое описание</h4><p>Дерево сильнорослое с широкопирамидальной кроной. Побеги прямые. Листья крупные, тёмно-зелёные. Цветение среднее.</p><h4>Характеристика плодов</h4><p>Плоды средней величины (140–180 г), округлые, слегка уплощённые. Кожица зелёно-жёлтая с тёмно-красным размытым румянцем. Мякоть белая, сочная, кисло-сладкая.</p><h4>Урожайность и хранение</h4><p>Зимный. Съём в октябре. Хранится до апреля. Урожайность высокая.</p><h4>Устойчивость к болезням</h4><p>Отличная зимостойкость (выдерживает до –40 °C). Устойчивость к парше высокая.</p>`,
+                kk: `<h4>Сорт тарихы</h4><p>Сорт ВНИИСПК-де Антоновка × Бабушкино будандастыруынан өсірілген. Ұлы Отан соғысы жауынгерлерінің есіміне арналған.</p><h4>Морфологиялық сипаттама</h4><p>Ағашы күшті өседі, кең пирамидалық тәжді.</p><h4>Жемістердің сипаттамасы</h4><p>Жемістер орташа (140–180 г), дөңгелек. Қабығы жасыл-сары, қою-қызыл румянцы бар. Еті ақ, шырынды, қышқыл-тәтті.</p><h4>Өнімділік және сақтау</h4><p>Қысқы сорт. Қазанда жиналады, сәуірге дейін сақталады.</p><h4>Ауруларға төзімділік</h4><p>Қыста төзімділігі өте жоғары (–40 °C-қа дейін). Паршаға жоғары төзімді.</p>`,
+                en: `<h4>History of the variety</h4><p>Bred in VNIISPK from crossing Antonovka × Babushkino. Dedicated to the memory of the Great Patriotic War soldiers.</p><h4>Morphological description</h4><p>Strong-growing tree with wide-pyramidal crown.</p><h4>Fruit characteristics</h4><p>Fruits medium (140–180 g), round. Skin green-yellow with dark red blush. Pulp white, juicy, sweet-sour.</p><h4>Yield and storage</h4><p>Winter variety. Harvest in October, stores until April.</p><h4>Disease resistance</h4><p>Excellent winter hardiness (down to –40 °C). High resistance to scab.</p>`
+            }
+        },
+        { 
+            id: 5, 
+            name: { ru: "Мартовское", kk: "Наурыздық", en: "Martovskoe" },
+            type: { ru: "Яблоня зимняя", kk: "Қысқы алма", en: "Winter apple" },
+            cardDesc: { 
+                ru: "Зимний сорт, сохраняющий свежесть до марта. Яблоки зелено-желтые.",
+                kk: "Наурызға дейін жаңалығын сақтайтын қысқы сорт. Жасыл-сары алмалар.",
+                en: "Winter variety that stays fresh until March. Green-yellow apples."
+            },
+            img: "https://dachadacha.com/images/15-08-2019/22.jpg", 
+            longDesc: {
+                ru: `<h4>История сорта</h4><p>Выведен в ВНИИСПК (Орёл) от скрещивания Мекинтош × Антоновка. Районирован в Центральном регионе.</p><h4>Морфологическое описание</h4><p>Дерево средней силы роста с округлой кроной. Листья средней величины, зелёные. Цветки белые.</p><h4>Характеристика плодов</h4><p>Плоды средней величины (130–170 г), округлые. Кожица зелёно-жёлтая с лёгким румянцем. Мякоть кремовая, сочная, кисло-сладкая с пряным ароматом.</p><h4>Урожайность и хранение</h4><p>Съём в конце сентября. Хранится до марта–апреля. Урожайность высокая и регулярная.</p><h4>Устойчивость к болезням</h4><p>Зимостойкость высокая. Устойчив к парше выше среднего.</p>`,
+                kk: `<h4>Сорт тарихы</h4><p>ВНИИСПК-де (Орёл) Мекинтош × Антоновка будандастыруынан өсірілген.</p><h4>Морфологиялық сипаттама</h4><p>Ағашы орташа күшті, дөңгелек тәжді.</p><h4>Жемістердің сипаттамасы</h4><p>Жемістер орташа (130–170 г), дөңгелек. Қабығы жасыл-сары, жеңіл румянцы бар. Еті кремді, шырынды, қышқыл-тәтті.</p><h4>Өнімділік және сақтау</h4><p>Қыркүйек соңында жиналады, наурыз–сәуірге дейін сақталады.</p><h4>Ауруларға төзімділік</h4><p>Қыста төзімділігі жоғары. Паршаға орташадан жоғары төзімді.</p>`,
+                en: `<h4>History of the variety</h4><p>Bred in VNIISPK (Orel) from crossing Mekintosh × Antonovka.</p><h4>Morphological description</h4><p>Medium vigor tree with rounded crown.</p><h4>Fruit characteristics</h4><p>Fruits medium (130–170 g), round. Skin green-yellow with light blush. Pulp creamy, juicy, sweet-sour with spicy aroma.</p><h4>Yield and storage</h4><p>Harvest end of September, stores until March–April.</p><h4>Disease resistance</h4><p>High winter hardiness. Above average resistance to scab.</p>`
+            }
+        },
+        { 
+            id: 6, 
+            name: { ru: "Первоуральское", kk: "Алғашқы Орал", en: "Pervouralskoe" },
+            type: { ru: "Яблоня зимняя", kk: "Қысқы алма", en: "Winter apple" },
+            cardDesc: { 
+                ru: "Сорт уральской селекции. Крупные, округлые плоды с ярким румянцем.",
+                kk: "Орал селекциясының сорты. Ірі, дөңгелек жемістер, жарқын қызаруы бар.",
+                en: "Ural selection variety. Large, round fruits with bright blush."
+            },
+            img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRjgDI4DgbK1qyQ9jyH9I__MF7YUv5QOkrJjw&s", 
+            longDesc: {
+                ru: `<h4>История сорта</h4><p>Выведен на Свердловской опытной станции садоводства (Урал) от скрещивания Жёлтое ребристое × сеянец Антоновки. Районирован на Урале и в Западной Сибири.</p><h4>Морфологическое описание</h4><p>Дерево средней силы роста с округлой кроной. Побеги толстые. Листья крупные, тёмно-зелёные.</p><h4>Характеристика плодов</h4><p>Плоды крупные (180–250 г), округлые, слегка ребристые. Кожица жёлтая с ярко-красным полосатым румянцем. Мякоть кремовая, сочная, кисло-сладкая.</p><h4>Урожайность и хранение</h4><p>Зимний. Съём в конце сентября. Хранится до мая. Урожайность высокая.</p><h4>Устойчивость к болезням</h4><p>Очень высокая зимостойкость. Устойчивость к парше высокая.</p>`,
+                kk: `<h4>Сорт тарихы</h4><p>Свердловск тәжірибе станциясында (Орал) Жёлтое ребристое × Антоновка сеянці будандастыруынан өсірілген.</p><h4>Морфологиялық сипаттама</h4><p>Ағашы орташа күшті, дөңгелек тәжді.</p><h4>Жемістердің сипаттамасы</h4><p>Жемістер ірі (180–250 г), дөңгелек. Қабығы сары, жарқын қызыл жолақты румянцы бар. Еті кремді, шырынды, қышқыл-тәтті.</p><h4>Өнімділік және сақтау</h4><p>Қысқы сорт. Қыркүйек соңында жиналады, мамырға дейін сақталады.</p><h4>Ауруларға төзімділік</h4><p>Қыста төзімділігі өте жоғары. Паршаға жоғары төзімді.</p>`,
+                en: `<h4>History of the variety</h4><p>Bred at Sverdlovsk Experimental Station (Ural) from crossing Yellow Ribbed × Antonovka seedling.</p><h4>Morphological description</h4><p>Medium vigor tree with rounded crown.</p><h4>Fruit characteristics</h4><p>Fruits large (180–250 g), round, slightly ribbed. Skin yellow with bright red striped blush. Pulp creamy, juicy, sweet-sour.</p><h4>Yield and storage</h4><p>Winter variety. Harvest end of September, stores until May.</p><h4>Disease resistance</h4><p>Very high winter hardiness. High resistance to scab.</p>`
+            }
+        },
+        { 
+            id: 7, 
+            name: { ru: "Пепин Башкирский", kk: "Башқұрт Пепіні", en: "Bashkir Pepin" },
+            type: { ru: "Яблоня летняя", kk: "Жазғы алма", en: "Summer apple" },
+            cardDesc: { 
+                ru: "Раннелетний сорт. Желто-зеленые плоды с полосатым румянцем.",
+                kk: "Ерте жазғы сорт. Сары-жасыл жемістер, жолақты қызаруы бар.",
+                en: "Early summer variety. Yellow-green fruits with striped blush."
+            },
+            img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ-Rb2mE0ylzq1kSgjdrtZeQRwPhEtXBFQcUg&s", 
+            longDesc: {
+                ru: `<h4>История сорта</h4><p>Местный башкирский сорт народной селекции, широко распространённый в Башкортостане и Оренбургской области.</p><h4>Морфологическое описание</h4><p>Дерево средней силы роста с округлой кроной. Листья средней величины, зелёные. Цветение раннее.</p><h4>Характеристика плодов</h4><p>Плоды средней величины (110–140 г), округло-конические. Кожица жёлто-зелёная с полосатым красным румянцем. Мякоть белая, сочная, сладко-кислая с ароматом.</p><h4>Урожайность и хранение</h4><p>Летний сорт. Съём в августе. Хранится 2–3 недели. Урожайность высокая.</p><h4>Устойчивость к болезням</h4><p>Хорошая зимостойкость. Устойчивость к парше средняя.</p>`,
+                kk: `<h4>Сорт тарихы</h4><p>Жергілікті башқұрт халықтық селекциясының сорты, Башқұртстан мен Орынбор облыстарында кең таралған.</p><h4>Морфологиялық сипаттама</h4><p>Ағашы орташа күшті, дөңгелек тәжді.</p><h4>Жемістердің сипаттамасы</h4><p>Жемістер орташа (110–140 г), дөңгелек-конусты. Қабығы сары-жасыл, жолақты қызыл румянцы бар. Еті ақ, шырынды, тәтті-қышқыл.</p><h4>Өнімділік және сақтау</h4><p>Жазғы сорт. Тамызда жиналады. 2–3 апта сақталады.</p><h4>Ауруларға төзімділік</h4><p>Қыста төзімділігі жақсы. Паршаға орташа төзімді.</p>`,
+                en: `<h4>History of the variety</h4><p>Local Bashkir folk-selection variety, widespread in Bashkortostan and Orenburg region.</p><h4>Morphological description</h4><p>Medium vigor tree with rounded crown.</p><h4>Fruit characteristics</h4><p>Fruits medium (110–140 g), round-conical. Skin yellow-green with striped red blush. Pulp white, juicy, sweet-sour with aroma.</p><h4>Yield and storage</h4><p>Summer variety. Harvest in August. Stores 2–3 weeks.</p><h4>Disease resistance</h4><p>Good winter hardiness. Moderate resistance to scab.</p>`
+            }
+        },
+        { 
+            id: 8, 
+            name: { ru: "Алое", kk: "Қызыл", en: "Aloe" },
+            type: { ru: "Яблоня осенняя", kk: "Күзгі алма", en: "Autumn apple" },
+            cardDesc: { 
+                ru: "Осенний сорт. Почти полностью покрыты ярко-алым румянцем. Сладкие.",
+                kk: "Күзгі сорт. Жарқын қызыл қызаруымен толық дерлік жабылған. Тәтті.",
+                en: "Autumn variety. Almost completely covered with bright scarlet blush. Sweet."
+            },
+            img: "https://rastisad.ru/sites/default/files/styles/max_650x650/public/2021-11/%D0%A0%D0%B0%D0%BD%D0%BD%D0%B5%D0%B5%D0%90%D0%BB%D0%BE%D0%B5%3D.jpg?itok=xYkPTJDR", 
+            longDesc: {
+                ru: `<h4>История сорта</h4><p>Выведен в ВНИИСПК от скрещивания Боровинка × сеянец Пепина шафранного.</p><h4>Морфологическое описание</h4><p>Дерево сильнорослое с широкопирамидальной кроной. Листья крупные.</p><h4>Характеристика плодов</h4><p>Плоды средней величины (130–160 г), округлые. Кожица почти полностью покрыта ярко-алым румянцем. Мякоть розоватая, сладкая, сочная.</p><h4>Урожайность и хранение</h4><p>Осенний. Съём в сентябре. Хранится до декабря. Урожайность очень высокая.</p><h4>Устойчивость к болезням</h4><p>Зимостойкость высокая. Устойчив к парше.</p>`,
+                kk: `<h4>Сорт тарихы</h4><p>ВНИИСПК-де Боровинка × Пепин шафранный сеянці будандастыруынан өсірілген.</p><h4>Морфологиялық сипаттама</h4><p>Ағашы күшті өседі, кең пирамидалық тәжді.</p><h4>Жемістердің сипаттамасы</h4><p>Жемістер орташа (130–160 г), дөңгелек. Қабығы жарқын қызыл румянцымен толық дерлік жабылған. Еті қызғылт, тәтті, шырынды.</p><h4>Өнімділік және сақтау</h4><p>Күзгі сорт. Қыркүйекте жиналады, желтоқсанға дейін сақталады.</p><h4>Ауруларға төзімділік</h4><p>Қыста төзімділігі жоғары. Паршаға төзімді.</p>`,
+                en: `<h4>History of the variety</h4><p>Bred in VNIISPK from crossing Borovinka × Pepin Shafranny seedling.</p><h4>Morphological description</h4><p>Strong-growing tree with wide-pyramidal crown.</p><h4>Fruit characteristics</h4><p>Fruits medium (130–160 g), round. Skin almost completely covered with bright scarlet blush. Pulp pinkish, sweet, juicy.</p><h4>Yield and storage</h4><p>Autumn variety. Harvest in September, stores until December.</p><h4>Disease resistance</h4><p>High winter hardiness. Resistant to scab.</p>`
+            }
+        },
+        { 
+            id: 9, 
+            name: { ru: "Зарянка", kk: "Таңшолпан", en: "Zaryanka" },
+            type: { ru: "Яблоня осенняя", kk: "Күзгі алма", en: "Autumn apple" },
+            cardDesc: { 
+                ru: "Высокоурожайный сорт. Зелено-желтые с оранжево-красным румянцем.",
+                kk: "Жоғары өнімді сорт. Жасыл-сары, қызғылт-сары-қызыл қызаруы бар.",
+                en: "High-yielding variety. Green-yellow with orange-red blush."
+            },
+            img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQvVrj5HZNePYFip4P0jMkoxeHf_etSXRylFQ&s", 
+            longDesc: {
+                ru: `<h4>История сорта</h4><p>Выведен в Башкирском НИИСХ. Районирован в Башкортостане.</p><h4>Морфологическое описание</h4><p>Дерево средней силы роста с округлой кроной.</p><h4>Характеристика плодов</h4><p>Плоды средней величины (120–150 г), округлые. Кожица жёлто-зелёная с оранжево-красным румянцем. Мякоть сочная, сладко-кислая.</p><h4>Урожайность и хранение</h4><p>Осенний. Съём в сентябре. Хранится до января. Урожайность очень высокая.</p><h4>Устойчивость к болезням</h4><p>Высокая зимостойкость. Устойчивость к парше хорошая.</p>`,
+                kk: `<h4>Сорт тарихы</h4><p>Башқұрт НИИСХ-да өсірілген. Башқұртстанда райондалады.</p><h4>Морфологиялық сипаттама</h4><p>Ағашы орташа күшті, дөңгелек тәжді.</p><h4>Жемістердің сипаттамасы</h4><p>Жемістер орташа (120–150 г), дөңгелек. Қабығы сары-жасыл, қызғылт-сары-қызыл румянцы бар. Еті шырынды, тәтті-қышқыл.</p><h4>Өнімділік және сақтау</h4><p>Күзгі сорт. Қыркүйекте жиналады, қаңтарға дейін сақталады.</p><h4>Ауруларға төзімділік</h4><p>Қыста төзімділігі жоғары. Паршаға жақсы төзімді.</p>`,
+                en: `<h4>History of the variety</h4><p>Bred in Bashkir Research Institute of Agriculture. Zoned in Bashkortostan.</p><h4>Morphological description</h4><p>Medium vigor tree with rounded crown.</p><h4>Fruit characteristics</h4><p>Fruits medium (120–150 g), round. Skin yellow-green with orange-red blush. Pulp juicy, sweet-sour.</p><h4>Yield and storage</h4><p>Autumn variety. Harvest in September, stores until January.</p><h4>Disease resistance</h4><p>High winter hardiness. Good resistance to scab.</p>`
+            }
+        },
+        { 
+            id: 10, 
+            name: { ru: "Тамбовское", kk: "Тамбов", en: "Tambovskoe" },
+            type: { ru: "Яблоня осенняя", kk: "Күзгі алма", en: "Autumn apple" },
+            cardDesc: { 
+                ru: "Зимостойкий осенний сорт. Плоды желтые с красными полосами.",
+                kk: "Қысқа төзімді күзгі сорт. Қызыл жолақтары бар сары жемістер.",
+                en: "Winter-hardy autumn variety. Yellow fruits with red stripes."
+            },
+            img: "https://rastisad.ru/sites/default/files/styles/max_650x650/public/2021-10/%D0%A2%D0%B0%D0%BC%D0%B1%D0%BE%D0%B2%D1%81%D0%BA%D0%BE%D0%B5.JPG?itok=UqIQ2mnT", 
+            longDesc: {
+                ru: `<h4>История сорта</h4><p>Выведен в Тамбовской области. Популярен в Центрально-Чернозёмном регионе.</p><h4>Морфологическое описание</h4><p>Дерево средней силы роста с округлой кроной.</p><h4>Характеристика плодов</h4><p>Плоды средней величины (130–170 г), округлые. Кожица жёлтая с красными полосами. Мякоть сочная, кисло-сладкая.</p><h4>Урожайность и хранение</h4><p>Осенний. Съём в сентябре. Хранится до февраля. Урожайность высокая.</p><h4>Устойчивость к болезням</h4><p>Хорошая зимостойкость. Устойчивость к парше средняя.</p>`,
+                kk: `<h4>Сорт тарихы</h4><p>Тамбов облысында өсірілген. Орталық-Қара топырақты аймақта танымал.</p><h4>Морфологиялық сипаттама</h4><p>Ағашы орташа күшті, дөңгелек тәжді.</p><h4>Жемістердің сипаттамасы</h4><p>Жемістер орташа (130–170 г), дөңгелек. Қабығы сары, қызыл жолақтары бар. Еті шырынды, қышқыл-тәтті.</p><h4>Өнімділік және сақтау</h4><p>Күзгі сорт. Қыркүйекте жиналады, ақпанға дейін сақталады.</p><h4>Ауруларға төзімділік</h4><p>Қыста төзімділігі жақсы. Паршаға орташа төзімді.</p>`,
+                en: `<h4>History of the variety</h4><p>Bred in Tambov region. Popular in the Central Black Earth region.</p><h4>Morphological description</h4><p>Medium vigor tree with rounded crown.</p><h4>Fruit characteristics</h4><p>Fruits medium (130–170 g), round. Skin yellow with red stripes. Pulp juicy, sweet-sour.</p><h4>Yield and storage</h4><p>Autumn variety. Harvest in September, stores until February.</p><h4>Disease resistance</h4><p>Good winter hardiness. Moderate resistance to scab.</p>`
+            }
+        },
+        { 
+            id: 11, 
+            name: { ru: "Аркадик", kk: "Аркадик", en: "Arkadik" },
+            type: { ru: "Яблоня летняя", kk: "Жазғы алма", en: "Summer apple" },
+            cardDesc: { 
+                ru: "Раннелетний сорт. Очень сладкие, сочные плоды. Созревают в августе.",
+                kk: "Ерте жазғы сорт. Өте тәтті, шырынды жемістер. Тамызда піседі.",
+                en: "Early summer variety. Very sweet, juicy fruits. Ripen in August."
+            },
+            img: "https://orton.ru/upload/iblock/f89/oz49qxu9f7xn7k0lx603j2as0idpnl6w.jpg", 
+            longDesc: {
+                ru: `<h4>История сорта</h4><p>Выведен в ВНИИСПК (Орёл). Один из самых сладких летних сортов.</p><h4>Морфологическое описание</h4><p>Дерево средней силы роста с округлой кроной.</p><h4>Характеристика плодов</h4><p>Плоды крупные (150–200 г), округло-конические. Кожица жёлто-зелёная с лёгким румянцем. Мякоть очень сочная, сладкая с медовым ароматом.</p><h4>Урожайность и хранение</h4><p>Летний. Созревает в середине августа. Хранится 2–3 недели. Урожайность высокая.</p><h4>Устойчивость к болезням</h4><p>Высокая зимостойкость. Устойчив к парше.</p>`,
+                kk: `<h4>Сорт тарихы</h4><p>ВНИИСПК-де (Орёл) өсірілген. Жазғы сорттардың ең тәттілерінің бірі.</p><h4>Морфологиялық сипаттама</h4><p>Ағашы орташа күшті, дөңгелек тәжді.</p><h4>Жемістердің сипаттамасы</h4><p>Жемістер ірі (150–200 г), дөңгелек-конусты. Қабығы сары-жасыл, жеңіл румянцы бар. Еті өте шырынды, тәтті, бал хош иісті.</p><h4>Өнімділік және сақтау</h4><p>Жазғы сорт. Тамыз ортасында піседі. 2–3 апта сақталады.</p><h4>Ауруларға төзімділік</h4><p>Қыста төзімділігі жоғары. Паршаға төзімді.</p>`,
+                en: `<h4>History of the variety</h4><p>Bred in VNIISPK (Orel). One of the sweetest summer varieties.</p><h4>Morphological description</h4><p>Medium vigor tree with rounded crown.</p><h4>Fruit characteristics</h4><p>Fruits large (150–200 g), round-conical. Skin yellow-green with light blush. Pulp very juicy, sweet with honey aroma.</p><h4>Yield and storage</h4><p>Summer variety. Ripens mid-August. Stores 2–3 weeks.</p><h4>Disease resistance</h4><p>High winter hardiness. Resistant to scab.</p>`
+            }
+        },
+        { 
+            id: 12, 
+            name: { ru: "Аксена", kk: "Аксена", en: "Aksena" },
+            type: { ru: "Яблоня летняя", kk: "Жазғы алма", en: "Summer apple" },
+            cardDesc: { 
+                ru: "Летний сорт уральской селекции. Желто-зеленые с легким румянцем.",
+                kk: "Орал селекциясының жазғы сорты. Сары-жасыл, жеңіл қызаруы бар.",
+                en: "Ural selection summer variety. Yellow-green with light blush."
+            },
+            img: "https://vniispk.ru/assets/directus/3dbc2a8f-53bd-44e6-9191-f01cd623d515.jpg", 
+            longDesc: {
+                ru: `<h4>История сорта</h4><p>Выведен на Свердловской опытной станции садоводства. Районирован на Урале.</p><h4>Морфологическое описание</h4><p>Дерево средней силы роста с округлой кроной.</p><h4>Характеристика плодов</h4><p>Плоды средней величины (120–150 г), округлые. Кожица жёлто-зелёная с лёгким румянцем. Мякоть сочная, сладко-кислая.</p><h4>Урожайность и хранение</h4><p>Летний. Созревает в августе. Хранится 3–4 недели.</p><h4>Устойчивость к болезням</h4><p>Отличная зимостойкость. Устойчивость к парше высокая.</p>`,
+                kk: `<h4>Сорт тарихы</h4><p>Свердловск тәжірибе станциясында өсірілген. Оралда райондалады.</p><h4>Морфологиялық сипаттама</h4><p>Ағашы орташа күшті, дөңгелек тәжді.</p><h4>Жемістердің сипаттамасы</h4><p>Жемістер орташа (120–150 г), дөңгелек. Қабығы сары-жасыл, жеңіл румянцы бар. Еті шырынды, тәтті-қышқыл.</p><h4>Өнімділік және сақтау</h4><p>Жазғы сорт. Тамызда піседі. 3–4 апта сақталады.</p><h4>Ауруларға төзімділік</h4><p>Қыста төзімділігі өте жақсы. Паршаға жоғары төзімді.</p>`,
+                en: `<h4>History of the variety</h4><p>Bred at Sverdlovsk Experimental Station of Horticulture. Zoned in the Urals.</p><h4>Morphological description</h4><p>Medium vigor tree with rounded crown.</p><h4>Fruit characteristics</h4><p>Fruits medium (120–150 g), round. Skin yellow-green with light blush. Pulp juicy, sweet-sour.</p><h4>Yield and storage</h4><p>Summer variety. Ripens in August. Stores 3–4 weeks.</p><h4>Disease resistance</h4><p>Excellent winter hardiness. High resistance to scab.</p>`
+            }
+        },
+        { 
+            id: 13, 
+            name: { ru: "Памяти Яковлева", kk: "Яковлевтің есімі", en: "Memory of Yakovlev" },
+            type: { ru: "Груша осенняя", kk: "Күзгі алмұрт", en: "Autumn pear" },
+            cardDesc: { 
+                ru: "Выдающийся сорт груши. Плоды крупные, маслянистые, без грануляций.",
+                kk: "Алмұрттың көрнекті сорты. Ірі, майлы жемістер, грануляциясыз.",
+                en: "Outstanding pear variety. Large, buttery fruits, without granulation."
+            },
+            img: "https://dachadacha.com/templates/yootheme/cache/real_23072941492539830-02e2fe2d.jpeg", 
+            longDesc: {
+                ru: `<h4>История сорта</h4><p>Выведен в ВНИИСПК от скрещивания Тёма × Ольге. Один из лучших осенних сортов груши для средней полосы России.</p><h4>Морфологическое описание</h4><p>Дерево средней силы роста с округлой кроной. Побеги прямые.</p><h4>Характеристика плодов</h4><p>Плоды крупные (150–250 г), грушевидные. Кожица жёлто-зелёная с оранжевым румянцем. Мякоть маслянистая, очень сочная, сладкая, без грануляций, тающая.</p><h4>Урожайность и хранение</h4><p>Осенний. Съём в сентябре. Хранится до декабря. Урожайность высокая.</p><h4>Устойчивость к болезням</h4><p>Высокая зимостойкость. Устойчив к парше и бактериальному ожогу.</p>`,
+                kk: `<h4>Сорт тарихы</h4><p>ВНИИСПК-де Тёма × Ольге будандастыруынан өсірілген. Орта жолақ үшін ең жақсы күзгі алмұрт сорттарының бірі.</p><h4>Морфологиялық сипаттама</h4><p>Ағашы орташа күшті, дөңгелек тәжді.</p><h4>Жемістердің сипаттамасы</h4><p>Жемістер ірі (150–250 г), алмұрт тәрізді. Қабығы сары-жасыл, қызғылт-сары румянцы бар. Еті майлы, өте шырынды, тәтті, грануляциясыз.</p><h4>Өнімділік және сақтау</h4><p>Күзгі сорт. Қыркүйекте жиналады, желтоқсанға дейін сақталады.</p><h4>Ауруларға төзімділік</h4><p>Қыста төзімділігі жоғары. Парша мен бактериялық күйікке төзімді.</p>`,
+                en: `<h4>History of the variety</h4><p>Bred in VNIISPK from crossing Tema × Olga. One of the best autumn pear varieties for the middle belt of Russia.</p><h4>Morphological description</h4><p>Medium vigor tree with rounded crown.</p><h4>Fruit characteristics</h4><p>Fruits large (150–250 g), pear-shaped. Skin yellow-green with orange blush. Pulp buttery, very juicy, sweet, without granulation, melting.</p><h4>Yield and storage</h4><p>Autumn variety. Harvest in September, stores until December.</p><h4>Disease resistance</h4><p>High winter hardiness. Resistant to scab and bacterial burn.</p>`
+            }
+        },
+        { 
+            id: 14, 
+            name: { ru: "Декабринка", kk: "Қараша", en: "Dekabrinka" },
+            type: { ru: "Груша зимняя", kk: "Қысқы алмұрт", en: "Winter pear" },
+            cardDesc: { 
+                ru: "Зимний сорт груши. Зелено-желтые плоды. Хранятся до декабря.",
+                kk: "Қысқы алмұрт сорты. Жасыл-сары жемістер. Желтоқсанға дейін сақталады.",
+                en: "Winter pear variety. Green-yellow fruits. Stored until December."
+            },
+            img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTSaMsQXtWtDQDzL71a_juDoZz-vZ6EckHL0Q&s", 
+            longDesc: {
+                ru: `<h4>История сорта</h4><p>Выведен в ВНИИСПК. Районирован в Центральном и Северо-Западном регионах.</p><h4>Морфологическое описание</h4><p>Дерево средней силы роста с пирамидальной кроной.</p><h4>Характеристика плодов</h4><p>Плоды средней величины (120–180 г), грушевидные. Кожица зелёно-жёлтая. Мякоть сочная, сладкая с лёгкой кислинкой.</p><h4>Урожайность и хранение</h4><p>Зимний. Съём в конце сентября. Хранится до декабря–января. Урожайность стабильная.</p><h4>Устойчивость к болезням</h4><p>Зимостойкость высокая. Устойчив к парше.</p>`,
+                kk: `<h4>Сорт тарихы</h4><p>ВНИИСПК-де өсірілген. Орталық және Солтүстік-Батыс аймақтарда райондалады.</p><h4>Морфологиялық сипаттама</h4><p>Ағашы орташа күшті, пирамидалық тәжді.</p><h4>Жемістердің сипаттамасы</h4><p>Жемістер орташа (120–180 г), алмұрт тәрізді. Қабығы жасыл-сары. Еті шырынды, тәтті, жеңіл қышқылдықпен.</p><h4>Өнімділік және сақтау</h4><p>Қысқы сорт. Қыркүйек соңында жиналады, желтоқсан–қаңтарға дейін сақталады.</p><h4>Ауруларға төзімділік</h4><p>Қыста төзімділігі жоғары. Паршаға төзімді.</p>`,
+                en: `<h4>History of the variety</h4><p>Bred in VNIISPK. Zoned in Central and North-Western regions.</p><h4>Morphological description</h4><p>Medium vigor tree with pyramidal crown.</p><h4>Fruit characteristics</h4><p>Fruits medium (120–180 g), pear-shaped. Skin green-yellow. Pulp juicy, sweet with light acidity.</p><h4>Yield and storage</h4><p>Winter variety. Harvest end of September, stores until December–January.</p><h4>Disease resistance</h4><p>High winter hardiness. Resistant to scab.</p>`
+            }
+        },
+        { 
+            id: 15, 
+            name: { ru: "Султан", kk: "Сұлтан", en: "Sultan" },
+            type: { ru: "Груша осенняя", kk: "Күзгі алмұрт", en: "Autumn pear" },
+            cardDesc: { 
+                ru: "Осенний сорт груши. Крупные, тающие плоды, очень сладкие.",
+                kk: "Күзгі алмұрт сорты. Ірі, еріп кететін жемістер, өте тәтті.",
+                en: "Autumn pear variety. Large, melting fruits, very sweet."
+            },
+            img: "https://rastisad.ru/sites/default/files/styles/max_650x650/public/2023-03/%D0%A1%D1%83%D0%BB%D1%82%D0%B0%D0%BD.jpg?itok=pwEEiwe9", 
+            longDesc: {
+                ru: `<h4>История сорта</h4><p>Выведен в ВНИИСПК. Один из самых сладких осенних сортов груши.</p><h4>Морфологическое описание</h4><p>Дерево средней силы роста с округлой кроной.</p><h4>Характеристика плодов</h4><p>Плоды крупные (180–300 г), грушевидные. Кожица жёлто-зелёная. Мякоть маслянистая, тающая, очень сладкая с приятным ароматом.</p><h4>Урожайность и хранение</h4><p>Осенний. Съём в сентябре. Хранится до декабря. Урожайность высокая.</p><h4>Устойчивость к болезням</h4><p>Хорошая зимостойкость. Устойчивость к парше выше средней.</p>`,
+                kk: `<h4>Сорт тарихы</h4><p>ВНИИСПК-де өсірілген. Алмұрттың ең тәтті күзгі сорттарының бірі.</p><h4>Морфологиялық сипаттама</h4><p>Ағашы орташа күшті, дөңгелек тәжді.</p><h4>Жемістердің сипаттамасы</h4><p>Жемістер ірі (180–300 г), алмұрт тәрізді. Қабығы сары-жасыл. Еті майлы, еріп кететін, өте тәтті, хош иісті.</p><h4>Өнімділік және сақтау</h4><p>Күзгі сорт. Қыркүйекте жиналады, желтоқсанға дейін сақталады.</p><h4>Ауруларға төзімділік</h4><p>Қыста төзімділігі жақсы. Паршаға орташадан жоғары төзімді.</p>`,
+                en: `<h4>History of the variety</h4><p>Bred in VNIISPK. One of the sweetest autumn pear varieties.</p><h4>Morphological description</h4><p>Medium vigor tree with rounded crown.</p><h4>Fruit characteristics</h4><p>Fruits large (180–300 g), pear-shaped. Skin yellow-green. Pulp buttery, melting, very sweet with pleasant aroma.</p><h4>Yield and storage</h4><p>Autumn variety. Harvest in September, stores until December.</p><h4>Disease resistance</h4><p>Good winter hardiness. Above average resistance to scab.</p>`
+            }
+        }
+    ];
+
+    let currentLang = 'ru';
+
+    const gridContainer = document.getElementById('tree-grid');
+    const detailsView = document.getElementById('details-view');
+
+    function renderGrid() {
+        gridContainer.innerHTML = '';
+        trees.forEach(tree => {
+            gridContainer.innerHTML += `
+                <div class="card" onclick="showDetails(${tree.id})">
+                    <img src="${tree.img}" alt="${tree.name[currentLang]}" class="card-img">
+                    <div class="card-content">
+                        <div class="type">${tree.type[currentLang]}</div>
+                        <h3>${tree.name[currentLang]}</h3>
+                        <p>${tree.cardDesc[currentLang]}</p>
+                    </div>
+                </div>
+            `;
+        });
+    }
+
+    function showDetails(treeId) {
+        const tree = trees.find(t => t.id === treeId);
+        if (!tree) return;
+
+        document.getElementById('details-img').src = tree.img;
+        document.getElementById('details-name').textContent = tree.name[currentLang];
+        document.getElementById('details-type').textContent = tree.type[currentLang];
+        document.getElementById('details-desc').innerHTML = tree.longDesc[currentLang] || tree.longDesc.ru;
+
+        gridContainer.style.display = 'none';
+        detailsView.style.display = 'block';
+        document.getElementById('header-subtitle').style.display = 'none';
+    }
+
+    function showGrid() {
+        detailsView.style.display = 'none';
+        gridContainer.style.display = 'grid';
+        document.getElementById('header-subtitle').style.display = 'block';
+        window.scrollTo(0, 0);
+    }
+
+    function switchLang(lang) {
+        currentLang = lang;
+
+        document.querySelectorAll('.lang-btn').forEach(btn => {
+            btn.classList.toggle('active', btn.id === `lang-${lang}`);
+        });
+
+        renderGrid();
+
+        if (detailsView.style.display === 'block') {
+            const currentName = document.getElementById('details-name').textContent;
+            const tree = trees.find(t => 
+                t.name.ru === currentName || t.name.kk === currentName || t.name.en === currentName
+            );
+            if (tree) {
+                document.getElementById('details-name').textContent = tree.name[currentLang];
+                document.getElementById('details-type').textContent = tree.type[currentLang];
+                document.getElementById('details-desc').innerHTML = tree.longDesc[currentLang] || tree.longDesc.ru;
+            }
+        }
+    }
+    renderGrid();
+</script>
+
+</body>
+</html>
